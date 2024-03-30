@@ -9,6 +9,7 @@ type app struct {
 	ENV    string
 	Key    string
 	Port   int
+	Lang   string
 }
 
 func App() app {
@@ -19,5 +20,6 @@ func App() app {
 		ENV:    viper.GetString("APP_ENV"),
 		Key:    viper.GetString("APP_KEY"),
 		Port:   viper.GetInt("APP_PORT"),
+		Lang:   viper.GetString("APP_LANG"),
 	}
 }

@@ -12,7 +12,7 @@ Project layout design influenced by [standard go project layout](https://docs.go
   # or
   go mod tidy
   ```
-- copy environment dev, test and set app_status=test for .env.test
+- copy environment
   ```bash
   make config
   #or
