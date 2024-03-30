@@ -2,7 +2,6 @@ package core
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"net/http"
 	"os"
@@ -30,7 +29,7 @@ func Server() {
 	// start server
 	go func() {
 		if err := app.Listen(fmt.Sprintf(":%d", config.App().Port)); err != nil && err != http.ErrServerClosed {
-			logger.New(errors.New("shutting down the server"), logger.SetType(logger.FATAL))
+			logger.New(err, logger.SetType(logger.FATAL))
 		}
 	}()
 
@@ -38,9 +37,5 @@ func Server() {
 	<-ctx.Done()
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	if err := app.ShutdownWithContext(ctx); err != nil {
-		logger.New(err, logger.SetType(logger.FATAL))
-	} else {
-		fmt.Println("Gracefully Server Shutdown")
-	}
+	app.ShutdownWithContext(ctx)
 }
