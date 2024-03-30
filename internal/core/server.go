@@ -10,6 +10,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/yaza-putu/golang-fiber-starter-mongo/internal/config"
+	"github.com/yaza-putu/golang-fiber-starter-mongo/internal/http/middleware"
 	"github.com/yaza-putu/golang-fiber-starter-mongo/internal/pkg/logger"
 	"github.com/yaza-putu/golang-fiber-starter-mongo/internal/routes"
 )
@@ -19,6 +20,8 @@ func Server() {
 		AppName: config.App().Name,
 	})
 
+	// handle panic error with recover
+	app.Use(middleware.PanicMiddleware)
 	// call route api
 	routes.Api(app)
 

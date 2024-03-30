@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/gofiber/fiber/v2/log"
 	"github.com/yaza-putu/golang-fiber-starter-mongo/internal/config"
@@ -81,11 +82,11 @@ func getlabel(l Lvl) string {
 
 func writeError(err error, l Lvl) {
 	cwd, _ := os.Getwd()
-
-	logFile, er := os.OpenFile("logs/error.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	filename := fmt.Sprintf("%s-error.log", time.Now().Format("2006-01-02"))
+	logFile, er := os.OpenFile(fmt.Sprintf("logs/%s", filename), os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if er != nil {
 		_ = os.Mkdir("logs", os.ModePerm)
-		path := filepath.Join(cwd, "logs", "error.log")
+		path := filepath.Join(cwd, "logs", filename)
 		newFilePath := filepath.FromSlash(path)
 		logFile, er = os.Create(newFilePath)
 	}
