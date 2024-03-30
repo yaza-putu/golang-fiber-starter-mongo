@@ -48,3 +48,47 @@ Project layout design influenced by [standard go project layout](https://docs.go
   ```bash
    make migrate-up
   ```
+
+
+## Validation
+- unique
+```go
+type v struct {
+	Name string `validate:"unique=table_name:column_name"`
+}
+// ecample
+type v struct {
+Name string `validate:"unique=users:name"`
+}
+```
+- unique with ignore
+```go
+type v struct {
+Name string `validate:"unique=table_name:column_name:ignore_with_field_name"`
+ID   string `validate:"required"`
+}
+// example
+type v struct {
+Name string `validate:"unique=users:name:ID"`
+ID   string `validate:"required" json:"id"`
+}
+```
+
+- file validation
+```go
+type FileHandler struct {
+  File multipart.File `validate:"required,filetype=image/png image/jpeg image/jpg"`
+}
+
+fs := FileHandler{}
+
+f, err := ctx.FormFile("file")
+if err == nil {
+// send file into FileHandler struct to validate
+  fs.File, err = f.Open()
+  if err != nil {
+    return err
+  }
+}
+// validate with custom validation from go-playground/validator 
+val, err := request.Validation(&fs)
