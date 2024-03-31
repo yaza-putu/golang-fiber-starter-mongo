@@ -8,6 +8,7 @@ import (
 
 	"github.com/yaza-putu/golang-fiber-starter-mongo/internal/config"
 	"github.com/yaza-putu/golang-fiber-starter-mongo/internal/database"
+	_ "github.com/yaza-putu/golang-fiber-starter-mongo/internal/database/migrations"
 	"github.com/yaza-putu/golang-fiber-starter-mongo/internal/pkg/logger"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -46,6 +47,11 @@ func Mongo() {
 			if client.Ping(ctx, nil) != nil {
 				logger.New(errors.New("Failed to connect mongo server"), logger.SetType(logger.FATAL))
 			}
+		}
+
+		// run auto migrate
+		if config.DB().AutoMigrate == true {
+			database.UpMIgration()
 		}
 	}
 }

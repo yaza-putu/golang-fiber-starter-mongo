@@ -3,23 +3,38 @@ package database
 import (
 	"context"
 
-	migrate "github.com/xakep666/mongo-migrate"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var Mongo *mongo.Database
+type MigrateFunc func(context context.Context, db *mongo.Database) error
+
+var (
+	Mongo         *mongo.Database
+	upMigration   []MigrateFunc
+	downMigration []MigrateFunc
+)
+
+func MigrationRegister(up MigrateFunc, down MigrateFunc) {
+	upMigration = append(upMigration, up)
+	downMigration = append(downMigration, down)
+}
 
 func UpMIgration() error {
-	migrate.SetDatabase(Mongo)
-	return migrate.Up(context.Background(), migrate.AllAvailable)
+	for i := 0; i < len(upMigration); i++ {
+		err := upMigration[i](context.Background(), Mongo)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func DownMigration() error {
-	migrate.SetDatabase(Mongo)
-	if err := migrate.Down(context.Background(), migrate.AllAvailable); err != nil {
-		return err
+	for i := 0; i < len(downMigration); i++ {
+		err := downMigration[i](context.Background(), Mongo)
+		if err != nil {
+			return err
+		}
 	}
-
-	Mongo.Collection("migrations").Drop(context.Background())
 	return nil
 }

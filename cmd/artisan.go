@@ -129,8 +129,10 @@ func (z *artisanCommand) downMigration() bool {
 
 func (z *artisanCommand) keyGenerate() bool {
 	key := unique.Key(51)
+	Passphrase := unique.Key(32)
 
 	findAndReplaceByKey("APP_KEY", fmt.Sprintf("'%s'", key))
+	findAndReplaceByKey("APP_PASSPHRASE", fmt.Sprintf("'%s'", Passphrase))
 
 	fmt.Println("Generate key successfully")
 	return true
